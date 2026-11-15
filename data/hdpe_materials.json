@@ -1,24 +1,28 @@
-from __future__ import annotations
-
-import json
-from pathlib import Path
-
-from app.db import SessionLocal, init_db
-from app.models import Material
-
-
-def main() -> None:
-    init_db()
-    db = SessionLocal()
-    if db.query(Material).count() == 0:
-        path = Path(__file__).resolve().parents[1] / "data" / "hdpe_materials.json"
-        with path.open("r", encoding="utf-8") as f:
-            rows = json.load(f)
-        for row in rows:
-            db.add(Material(**row))
-        db.commit()
-    db.close()
-
-
-if __name__ == "__main__":
-    main()
+[
+  {
+    "id": "mat-hdpe-pe80",
+    "code": "HDPE-PE80",
+    "name": "HDPE PE80 marine grade",
+    "material_family": "HDPE",
+    "density": 0.96,
+    "elastic_modulus": 1100,
+    "poisson_ratio": 0.42,
+    "yield_strength": 23,
+    "source_type": "certified",
+    "certified": true,
+    "notes": "Representative marine-grade HDPE dataset for initial design workbench validation."
+  },
+  {
+    "id": "mat-hdpe-pe100",
+    "code": "HDPE-PE100",
+    "name": "HDPE PE100 marine grade",
+    "material_family": "HDPE",
+    "density": 0.97,
+    "elastic_modulus": 1200,
+    "poisson_ratio": 0.43,
+    "yield_strength": 25,
+    "source_type": "certified",
+    "certified": true,
+    "notes": "Higher stiffness grade for primary hull structures; engineering verification required."
+  }
+]
