@@ -4,9 +4,16 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.db import get_db
-from app.models import AnalysisModel, LoadCase, Material, Part, Project, ManufacturingPackage
+from app.models import AnalysisModel, LoadCase, ManufacturingPackage, Material, Part, Project
 from app.schemas import AnalysisCreate, LoadCaseCreate, MaterialCreate, PartCreate, ProjectCreate, WorkbenchSummary
-from app.services.workbench import build_workbench_summary, create_analysis, create_load_case, create_material, create_part, create_project
+from app.services.workbench import (
+    build_workbench_summary,
+    create_analysis,
+    create_load_case,
+    create_material,
+    create_part,
+    create_project,
+)
 
 api_router = APIRouter(prefix="/api/v1")
 
@@ -33,19 +40,22 @@ def project_summary(project_id: str, db: Session = Depends(get_db)) -> Workbench
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
     summary = build_workbench_summary(db, project_id)
-    return summary
+    return WorkbenchSummary(**summary)
 
 
 @api_router.get("/materials")
 def list_materials(db: Session = Depends(get_db)) -> list[dict]:
-    return [{
-        "id": m.id,
-        "code": m.code,
-        "name": m.name,
-        "material_family": m.material_family,
-        "consulted": m.certified,
-        "elastic_modulus": m.elastic_modulus,
-    } for m in db.query(Material).all()]
+    return [
+        {
+            "id": m.id,
+            "code": m.code,
+            "name": m.name,
+            "material_family": m.material_family,
+            "certified": m.certified,
+            "elastic_modulus": m.elastic_modulus,
+        }
+        for m in db.query(Material).all()
+    ]
 
 
 @api_router.post("/materials", status_code=status.HTTP_201_CREATED)
@@ -75,7 +85,10 @@ def create_analysis_endpoint(payload: AnalysisCreate, db: Session = Depends(get_
 @api_router.get("/analyses")
 def list_analyses(db: Session = Depends(get_db)) -> list[dict]:
     items = db.query(AnalysisModel).all()
-    return [{"id": a.id, "code": a.analysis_code, "name": a.name, "solver_type": a.solver_type, "status": a.status} for a in items]
+    return [
+        {"id": a.id, "code": a.analysis_code, "name": a.name, "solver_type": a.solver_type, "status": a.status}
+        for a in items
+    ]
 
 
 @api_router.get("/manufacturing-packages")
