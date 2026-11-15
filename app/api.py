@@ -1,11 +1,20 @@
 from __future__ import annotations
 
+from typing import Any
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.models import AnalysisModel, LoadCase, ManufacturingPackage, Material, Part, Project
-from app.schemas import AnalysisCreate, LoadCaseCreate, MaterialCreate, PartCreate, ProjectCreate, WorkbenchSummary
+from app.schemas import (
+    AnalysisCreate,
+    LoadCaseCreate,
+    MaterialCreate,
+    PartCreate,
+    ProjectCreate,
+    WorkbenchSummary,
+)
 from app.services.workbench import (
     build_workbench_summary,
     create_analysis,
@@ -13,6 +22,7 @@ from app.services.workbench import (
     create_material,
     create_part,
     create_project,
+    read_seed_materials,
 )
 
 api_router = APIRouter(prefix="/api/v1")
@@ -23,6 +33,15 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@api_router.get("/meta")
+def meta() -> dict[str, Any]:
+    return {
+        "app": "HDPE Ship Design Workbench",
+        "version": "0.1.0",
+        "seed_materials": read_seed_materials(),
+    }
+
+
 @api_router.post("/projects", status_code=status.HTTP_201_CREATED)
 def create_project_endpoint(project: ProjectCreate, db: Session = Depends(get_db)) -> dict:
     item = create_project(db, project)
@@ -30,7 +49,7 @@ def create_project_endpoint(project: ProjectCreate, db: Session = Depends(get_db
 
 
 @api_router.get("/projects")
-def list_projects(db: Session = Depends(get_db)) -> list[dict]:
+def list_projects(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     return [{"id": p.id, "code": p.code, "name": p.name, "status": p.status} for p in db.query(Project).all()]
 
 
@@ -44,7 +63,7 @@ def project_summary(project_id: str, db: Session = Depends(get_db)) -> Workbench
 
 
 @api_router.get("/materials")
-def list_materials(db: Session = Depends(get_db)) -> list[dict]:
+def list_materials(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     return [
         {
             "id": m.id,
@@ -70,10 +89,34 @@ def create_part_endpoint(part: PartCreate, db: Session = Depends(get_db)) -> dic
     return {"id": item.id, "part_code": item.part_code, "part_name": item.part_name}
 
 
+@api_router.get("/parts")
+def list_parts(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
+    return [
+        {
+            "id": p.id,
+            "project_id": p.project_id,
+            "part_code": p.part_code,
+            "part_name": p.part_name,
+            "part_type": p.part_type,
+            "status": p.status,
+            "thickness": p.thickness,
+        }
+        for p in db.query(Part).all()
+    ]
+
+
 @api_router.post("/load-cases", status_code=status.HTTP_201_CREATED)
 def create_load_case_endpoint(payload: LoadCaseCreate, db: Session = Depends(get_db)) -> dict:
     item = create_load_case(db, payload)
     return {"id": item.id, "code": item.load_case_code, "name": item.name}
+
+
+@api_router.get("/load-cases")
+def list_load_cases(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
+    return [
+        {"id": c.id, "project_id": c.project_id, "code": c.load_case_code, "name": c.name, "case_type": c.case_type}
+        for c in db.query(LoadCase).all()
+    ]
 
 
 @api_router.post("/analyses", status_code=status.HTTP_201_CREATED)
@@ -83,7 +126,7 @@ def create_analysis_endpoint(payload: AnalysisCreate, db: Session = Depends(get_
 
 
 @api_router.get("/analyses")
-def list_analyses(db: Session = Depends(get_db)) -> list[dict]:
+def list_analyses(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     items = db.query(AnalysisModel).all()
     return [
         {"id": a.id, "code": a.analysis_code, "name": a.name, "solver_type": a.solver_type, "status": a.status}
@@ -92,6 +135,6 @@ def list_analyses(db: Session = Depends(get_db)) -> list[dict]:
 
 
 @api_router.get("/manufacturing-packages")
-def list_manufacturing_packages(db: Session = Depends(get_db)) -> list[dict]:
+def list_manufacturing_packages(db: Session = Depends(get_db)) -> list[dict[str, Any]]:
     items = db.query(ManufacturingPackage).all()
     return [{"id": i.id, "name": i.name, "package_type": i.package_type, "status": i.status} for i in items]

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import String, Float, ForeignKey, Integer, Text, Boolean, DateTime, JSON
+from sqlalchemy import String, Float, ForeignKey, Text, Boolean, DateTime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from datetime import datetime
 
@@ -94,18 +94,6 @@ class AnalysisModel(Base):
 
     project: Mapped[Project] = relationship(back_populates="analyses")
     load_case: Mapped[LoadCase | None] = relationship(back_populates="analyses")
-
-
-class WeldJoint(Base):
-    __tablename__ = "weld_joints"
-
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, index=True)
-    project_id: Mapped[str] = mapped_column(String(36), ForeignKey("projects.id"), nullable=False)
-    joint_code: Mapped[str] = mapped_column(String(120), unique=True)
-    weld_type: Mapped[str] = mapped_column(String(100), default="fillet")
-    weld_process: Mapped[str | None] = mapped_column(String(100), nullable=True)
-    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
 class ManufacturingPackage(Base):
