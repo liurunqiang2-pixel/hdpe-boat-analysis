@@ -36,7 +36,7 @@ class Material(Base):
     elastic_modulus: Mapped[float | None] = mapped_column(Float, nullable=True)
     poisson_ratio: Mapped[float | None] = mapped_column(Float, nullable=True)
     yield_strength: Mapped[float | None] = mapped_column(Float, nullable=True)
-    source_type: Mapped[str] = mapped_column(String(50), default="certified")
+    source_type: Mapped[str] = mapped_column(String(50), default="unverified")
     certified: Mapped[bool] = mapped_column(Boolean, default=False)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
@@ -94,6 +94,18 @@ class AnalysisModel(Base):
 
     project: Mapped[Project] = relationship(back_populates="analyses")
     load_case: Mapped[LoadCase | None] = relationship(back_populates="analyses")
+
+
+class WeldJoint(Base):
+    __tablename__ = "weld_joints"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, index=True)
+    project_id: Mapped[str] = mapped_column(String(36), ForeignKey("projects.id"), nullable=False)
+    joint_code: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    weld_type: Mapped[str] = mapped_column(String(100), default="butt")
+    weld_process: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
 class ManufacturingPackage(Base):
