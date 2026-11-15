@@ -1,15 +1,18 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
 
 from app.api import api_router
-from app.db import SessionLocal, init_db
+from app.config import settings
+from app.db import init_db
 from app.services.workbench import seed_materials
+from app.db import SessionLocal
 
-app = FastAPI(title="HDPE Ship Design Workbench", version="0.1.0")
+app = FastAPI(title=settings.app_name, version="0.3.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,12 +21,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(api_router)
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
-
-
-@app.get("/")
-def index() -> FileResponse:
-    return FileResponse("app/static/index.html")
 
 
 @app.on_event("startup")
@@ -36,12 +33,11 @@ def startup() -> None:
         db.close()
 
 
+@app.get("/")
+def index() -> FileResponse:
+    return FileResponse(Path("app/static/index.html"))
+
+
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)

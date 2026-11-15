@@ -1,32 +1,45 @@
 # HDPE Ship Design Workbench
 
-This repository includes a lightweight prototype for managing HDPE vessel design project data. It provides a dashboard and API for projects, materials, parts, load cases, analyses, welding records, and manufacturing packages.
+A lightweight engineering prototype for managing HDPE vessel design projects, materials, parts, load cases, analyses, weld joints, review records, and manufacturing packages.
+
+## Features
+
+- Project dashboard with summary counts
+- Material catalog with engineering metadata
+- Parts linked to project and material records
+- Load case and structural analysis tracking
+- Weld joint management
+- Manufacturing package tracking
+- BOM CSV export for project parts
+- Seeded sample material data for local prototype use
 
 ## Run locally
 
 ```bash
 python -m venv .venv
-# Windows: .venv\\Scripts\\activate
 source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-Open <http://127.0.0.1:8000/> for the dashboard and <http://127.0.0.1:8000/docs> for interactive API documentation. The app creates its SQLite database under `data/` and seeds the sample material catalog on startup.
+Then open:
+- http://127.0.0.1:8000/ for the dashboard
+- http://127.0.0.1:8000/docs for the interactive API docs
 
-## API overview
+## API highlights
 
-- `GET /api/v1/dashboard` — summary counts
-- `GET|POST /api/v1/projects`
-- `GET|POST /api/v1/materials`
-- `GET|POST /api/v1/parts` (`project_id` query parameter filters parts)
-- `GET|POST /api/v1/load-cases`
-- `GET|POST /api/v1/analyses`
-- `GET|POST /api/v1/weld-joints`
-- `GET|POST /api/v1/manufacturing-packages`
-- `GET /api/v1/projects/{project_id}/manufacturing/bom.csv` — BOM export
-- `GET /api/v1/projects/{project_id}/summary`
+- GET /api/v1/dashboard
+- GET|POST /api/v1/projects
+- GET|POST /api/v1/materials
+- GET|POST /api/v1/parts
+- GET|POST /api/v1/load-cases
+- GET|POST /api/v1/analyses
+- GET|POST /api/v1/weld-joints
+- GET|POST /api/v1/manufacturing-packages
+- GET|POST /api/v1/reviews
+- GET /api/v1/projects/{project_id}/manufacturing/bom.csv
+- GET /api/v1/projects/{project_id}/summary
 
-## Engineering limitations
+## Engineering note
 
-The sample HDPE values are placeholders for application development, not approved design allowables. The app does not perform vessel design approval or FEA calculations. Verify material properties, welding procedures, load cases, rules, and results with traceable data and qualified naval architects/engineers before using them in real design or construction.
+The material values and calculations are sample prototype data only and should never be treated as approved design allowables. All design and manufacturing decisions require verification against certified supplier data, applicable rules, and qualified engineering review.

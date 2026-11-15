@@ -8,16 +8,14 @@
       :root {
         --bg: #07111f;
         --bg-2: #0f172a;
-        --panel: rgba(15, 23, 42, 0.9);
-        --panel-strong: #111827;
+        --panel: rgba(15, 23, 42, 0.92);
         --panel-alt: #172033;
         --border: rgba(148, 163, 184, 0.22);
-        --text: #e5eefb;
+        --text: #edf6ff;
         --muted: #9fb6d0;
         --accent: #38bdf8;
         --accent-2: #22c55e;
         --warning: #fbbf24;
-        --danger: #f87171;
       }
       * { box-sizing: border-box; }
       body {
@@ -26,160 +24,36 @@
         background: linear-gradient(135deg, #020817 0%, var(--bg-2) 50%, #111827 100%);
         color: var(--text);
       }
-      .container {
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: 32px 20px 48px;
-      }
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 16px;
-        margin-bottom: 24px;
-      }
-      .title {
-        margin: 0;
-        font-size: clamp(2rem, 3vw, 2.9rem);
-        letter-spacing: -0.04em;
-      }
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        border: 1px solid var(--border);
-        background: rgba(56, 189, 248, 0.08);
-        color: var(--accent);
-        padding: 8px 14px;
-        border-radius: 999px;
-        font-size: 0.72rem;
-        letter-spacing: 0.09em;
-        text-transform: uppercase;
-        font-weight: 700;
-      }
-      .grid {
-        display: grid;
-        gap: 18px;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      }
-      .panel {
-        background: rgba(17, 24, 39, 0.92);
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        box-shadow: 0 20px 40px rgba(2, 8, 23, 0.28);
-      }
-      .stat {
-        padding: 18px 20px;
-      }
-      .stat .label {
-        color: var(--muted);
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-      }
-      .stat .value {
-        margin-top: 10px;
-        font-size: clamp(1.8rem, 3vw, 2.5rem);
-        font-weight: 700;
-      }
-      .content {
-        display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
-        gap: 20px;
-        margin-top: 24px;
-      }
-      .box {
-        padding: 20px;
-      }
-      .box h2 {
-        margin: 0 0 16px;
-        font-size: 1.08rem;
-      }
-      .stack {
-        display: grid;
-        gap: 20px;
-      }
-      form {
-        display: grid;
-        gap: 12px;
-      }
-      label {
-        display: grid;
-        gap: 6px;
-        color: var(--muted);
-        font-size: 0.8rem;
-      }
-      input, select, textarea, button {
-        width: 100%;
-        padding: 11px 12px;
-        border-radius: 10px;
-        border: 1px solid var(--border);
-        background: var(--panel-alt);
-        color: var(--text);
-        font: inherit;
-      }
-      input:focus, select:focus, textarea:focus {
-        outline: none;
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.16);
-      }
-      textarea { resize: vertical; min-height: 80px; }
-      button {
-        cursor: pointer;
-        font-weight: 600;
-        border: none;
-        transition: transform 0.15s ease;
-      }
-      button:hover { transform: translateY(-1px); }
-      .primary {
-        background: linear-gradient(135deg, var(--accent), #2563eb);
-      }
-      .secondary {
-        background: linear-gradient(135deg, var(--accent-2), #0ea5e9);
-      }
-      .list {
-        display: grid;
-        gap: 10px;
-      }
-      .row {
-        display: grid;
-        gap: 4px;
-        padding: 12px 14px;
-        border: 1px solid var(--border);
-        background: rgba(15, 23, 42, 0.55);
-        border-radius: 12px;
-      }
-      .row-top {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        align-items: center;
-      }
-      .muted { color: var(--muted); }
+      .container { max-width: 1200px; margin: 0 auto; padding: 32px 20px 60px; }
+      .header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 26px; }
+      .title { margin: 0; font-size: clamp(2.1rem, 4vw, 3rem); letter-spacing: -0.05em; }
+      .badge { display: inline-flex; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--border); background: rgba(56,189,248,0.08); color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.72rem; font-weight: 700; }
+      .stats { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+      .panel { background: rgba(17,24,39,0.92); border: 1px solid var(--border); border-radius: 18px; box-shadow: 0 18px 38px rgba(2,8,23,0.28); }
+      .stat { padding: 20px; }
+      .label { color: var(--muted); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
+      .value { margin-top: 10px; font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 700; }
+      .layout { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 20px; margin-top: 26px; }
+      .stack { display: grid; gap: 20px; }
+      .box { padding: 20px; }
+      .box h2 { margin: 0 0 16px; font-size: 1.06rem; }
+      form { display: grid; gap: 12px; }
+      label { display: grid; gap: 6px; font-size: 0.8rem; color: var(--muted); }
+      input, select, textarea, button { width: 100%; padding: 11px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--panel-alt); color: var(--text); font: inherit; }
+      textarea { min-height: 90px; resize: vertical; }
+      input:focus, select:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(56,189,248,0.16); }
+      button { cursor: pointer; border: none; font-weight: 600; }
+      .primary { background: linear-gradient(135deg, var(--accent), #2563eb); }
+      .secondary { background: linear-gradient(135deg, var(--accent-2), #0ea5e9); }
+      .list { display: grid; gap: 10px; }
+      .row { display: grid; gap: 4px; padding: 12px 14px; border: 1px solid var(--border); background: rgba(15,23,42,0.6); border-radius: 12px; }
+      .row-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
       .small { font-size: 0.78rem; }
-      .tag {
-        display: inline-flex;
-        align-items: center;
-        border-radius: 999px;
-        padding: 4px 8px;
-        background: rgba(34, 197, 94, 0.12);
-        color: #86efac;
-        font-size: 0.72rem;
-        border: 1px solid rgba(34, 197, 94, 0.18);
-      }
-      .tag.warn {
-        background: rgba(251, 191, 36, 0.12);
-        color: #fcd34d;
-        border-color: rgba(251, 191, 36, 0.18);
-      }
-      .subgrid {
-        display: grid;
-        gap: 20px;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        margin-top: 20px;
-      }
-      @media (max-width: 980px) {
-        .content { grid-template-columns: 1fr; }
-      }
+      .muted { color: var(--muted); }
+      .tag { display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 999px; border: 1px solid rgba(34,197,94,0.18); background: rgba(34,197,94,0.12); color: #86efac; font-size: 0.72rem; }
+      .warn { background: rgba(251,191,36,0.12); border-color: rgba(251,191,36,0.18); color: #fcd34d; }
+      .subgrid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-top: 18px; }
+      @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
     </style>
   </head>
   <body>
@@ -189,167 +63,95 @@
         <span class="badge">prototype</span>
       </div>
 
-      <div class="grid" id="stats"></div>
+      <div class="stats" id="stats"></div>
 
-      <div class="content">
-        <section class="stack">
+      <div class="layout">
+        <div class="stack">
           <div class="panel box">
             <h2>New project</h2>
             <form id="projectForm">
-              <label>
-                Project code
-                <input name="code" placeholder="HDPE-001" required />
-              </label>
-              <label>
-                Project name
-                <input name="name" placeholder="Blue Flag Hull Design" required />
-              </label>
-              <label>
-                Description
-                <textarea name="description" placeholder="Main design objectives, ship type, intended usage"></textarea>
-              </label>
-              <button class="primary" type="submit">Create project</button>
+              <label>Project code<input name="code" placeholder="HDPE-001" required /></label>
+              <label>Project name<input name="name" placeholder="Blue Flag Hull" required /></label>
+              <label>Description<textarea name="description" placeholder="Main design objective, vessel type, usage"></textarea></label>
+              <button type="submit" class="primary">Create project</button>
             </form>
           </div>
 
           <div class="panel box">
             <h2>New material</h2>
             <form id="materialForm">
-              <label>
-                Code
-                <input name="code" placeholder="HDPE-PE100" required />
-              </label>
-              <label>
-                Name
-                <input name="name" placeholder="Marine grade PE100" required />
-              </label>
-              <label>
-                Material family
-                <input name="material_family" value="HDPE" />
-              </label>
-              <label>
-                Elastic modulus (MPa)
-                <input name="elastic_modulus" type="number" step="any" placeholder="900" />
-              </label>
-              <label>
-                Yield strength (MPa)
-                <input name="yield_strength" type="number" step="any" placeholder="22" />
-              </label>
-              <button class="secondary" type="submit">Create material</button>
+              <label>Code<input name="code" placeholder="HDPE-PE100" required /></label>
+              <label>Name<input name="name" placeholder="Marine PE100 HDPE" required /></label>
+              <label>Material family<input name="material_family" value="HDPE" /></label>
+              <label>Elastic modulus (MPa)<input name="elastic_modulus" type="number" step="any" placeholder="900" /></label>
+              <label>Yield strength (MPa)<input name="yield_strength" type="number" step="any" placeholder="22" /></label>
+              <button type="submit" class="secondary">Create material</button>
             </form>
           </div>
-        </section>
+        </div>
 
-        <aside class="stack">
+        <div class="stack">
           <div class="panel box">
             <h2>Projects</h2>
-            <div id="projectsList" class="list"></div>
+            <div class="list" id="projectsList"></div>
           </div>
-
           <div class="panel box">
             <h2>Materials</h2>
-            <div id="materialsList" class="list"></div>
+            <div class="list" id="materialsList"></div>
           </div>
-        </aside>
+        </div>
       </div>
 
       <div class="subgrid">
         <div class="panel box">
           <h2>New part</h2>
           <form id="partForm">
-            <label>
-              Project
-              <select id="partProjectId" name="project_id" required></select>
-            </label>
-            <label>
-              Part code
-              <input name="part_code" placeholder="P-001" required />
-            </label>
-            <label>
-              Part name
-              <input name="part_name" placeholder="Hull shell panel" required />
-            </label>
-            <label>
-              Part type
-              <input name="part_type" placeholder="panel" required />
-            </label>
-            <label>
-              Material
-              <select id="partMaterialId" name="material_id"></select>
-            </label>
-            <label>
-              Thickness (mm)
-              <input name="thickness" type="number" step="any" placeholder="8" />
-            </label>
-            <button class="primary" type="submit">Create part</button>
+            <label>Project<select id="partProjectId" name="project_id" required></select></label>
+            <label>Part code<input name="part_code" placeholder="P-001" required /></label>
+            <label>Part name<input name="part_name" placeholder="Hull shell panel" required /></label>
+            <label>Part type<input name="part_type" placeholder="panel" required /></label>
+            <label>Material<select id="partMaterialId" name="material_id"></select></label>
+            <label>Thickness (mm)<input name="thickness" type="number" step="any" placeholder="8" /></label>
+            <button type="submit" class="primary">Create part</button>
           </form>
         </div>
 
         <div class="panel box">
           <h2>New load case</h2>
           <form id="loadCaseForm">
-            <label>
-              Project
-              <select id="loadCaseProjectId" name="project_id" required></select>
-            </label>
-            <label>
-              Load case code
-              <input name="load_case_code" placeholder="LC-001" required />
-            </label>
-            <label>
-              Name
-              <input name="name" placeholder="Service condition" required />
-            </label>
-            <label>
-              Case type
-              <input name="case_type" value="static" />
-            </label>
-            <button class="secondary" type="submit">Create load case</button>
+            <label>Project<select id="loadCaseProjectId" name="project_id" required></select></label>
+            <label>Load case code<input name="load_case_code" placeholder="LC-001" required /></label>
+            <label>Name<input name="name" placeholder="Service condition" required /></label>
+            <label>Case type<input name="case_type" value="static" /></label>
+            <button type="submit" class="secondary">Create load case</button>
           </form>
         </div>
 
         <div class="panel box">
           <h2>New analysis</h2>
           <form id="analysisForm">
-            <label>
-              Project
-              <select id="analysisProjectId" name="project_id" required></select>
-            </label>
-            <label>
-              Load case
-              <select id="analysisLoadCaseId" name="load_case_id"></select>
-            </label>
-            <label>
-              Analysis code
-              <input name="analysis_code" placeholder="AN-001" required />
-            </label>
-            <label>
-              Name
-              <input name="name" placeholder="Shell strength check" required />
-            </label>
-            <label>
-              Solver
-              <input name="solver_type" value="calculix" />
-            </label>
-            <button class="primary" type="submit">Create analysis</button>
+            <label>Project<select id="analysisProjectId" name="project_id" required></select></label>
+            <label>Load case<select id="analysisLoadCaseId" name="load_case_id"></select></label>
+            <label>Analysis code<input name="analysis_code" placeholder="AN-001" required /></label>
+            <label>Name<input name="name" placeholder="Shell strength check" required /></label>
+            <label>Solver<input name="solver_type" value="calculix" /></label>
+            <button type="submit" class="primary">Create analysis</button>
           </form>
         </div>
       </div>
 
-      <div class="subgrid" style="margin-top: 24px;">
+      <div class="subgrid">
         <div class="panel box">
           <h2>Parts</h2>
-          <div id="partsList" class="list"></div>
+          <div class="list" id="partsList"></div>
         </div>
-
         <div class="panel box">
           <h2>Load cases</h2>
-          <div id="loadCasesList" class="list"></div>
+          <div class="list" id="loadCasesList"></div>
         </div>
-
         <div class="panel box">
           <h2>Analyses</h2>
-          <div id="analysesList" class="list"></div>
+          <div class="list" id="analysesList"></div>
         </div>
       </div>
     </div>
@@ -372,30 +174,28 @@
         return res.json();
       }
 
-      function populateSelect(selectId, items, placeholder) {
-        const select = document.getElementById(selectId);
-        select.innerHTML = `<option value="">${placeholder}</option>` + items.map(item => {
-          const label = item.name || item.code || item.part_name || item.joint_code;
-          const value = item.id;
-          return `<option value="${value}">${label}</option>`;
-        }).join('');
-      }
-
       function renderStats(stats) {
         const cards = [
-          { label: 'Projects', value: stats.projects_count ?? 0 },
-          { label: 'Materials', value: stats.materials_count ?? 0 },
-          { label: 'Parts', value: stats.parts_count ?? 0 },
-          { label: 'Load cases', value: stats.load_cases_count ?? 0 },
-          { label: 'Analyses', value: stats.analyses_count ?? 0 },
+          ['Projects', stats.projects_count || 0],
+          ['Materials', stats.materials_count || 0],
+          ['Parts', stats.parts_count || 0],
+          ['Load cases', stats.load_cases_count || 0],
+          ['Analyses', stats.analyses_count || 0],
         ];
-
-        document.getElementById('stats').innerHTML = cards.map(card => `
+        document.getElementById('stats').innerHTML = cards.map(([label, value]) => `
           <div class="panel stat">
-            <div class="label">${card.label}</div>
-            <div class="value">${card.value}</div>
+            <div class="label">${label}</div>
+            <div class="value">${value}</div>
           </div>
         `).join('');
+      }
+
+      function populateSelect(id, items, placeholder) {
+        const select = document.getElementById(id);
+        select.innerHTML = `<option value="">${placeholder}</option>` + items.map(item => {
+          const label = item.name || item.code || item.part_name || item.joint_code || 'Item';
+          return `<option value="${item.id}">${label}</option>`;
+        }).join('');
       }
 
       function renderProjects(projects) {
@@ -486,27 +286,24 @@
         renderStats(dashboard);
         renderProjects(projects);
         renderMaterials(materials);
-
         populateSelect('partProjectId', projects, 'Select project');
         populateSelect('loadCaseProjectId', projects, 'Select project');
         populateSelect('analysisProjectId', projects, 'Select project');
         populateSelect('partMaterialId', materials, 'No material selected');
 
-        const selectedProjectId = projects[0]?.id || '';
-        if (selectedProjectId) {
-          document.getElementById('partProjectId').value = selectedProjectId;
-          document.getElementById('loadCaseProjectId').value = selectedProjectId;
-          document.getElementById('analysisProjectId').value = selectedProjectId;
+        const projectId = projects[0]?.id || '';
+        if (projectId) {
+          document.getElementById('partProjectId').value = projectId;
+          document.getElementById('loadCaseProjectId').value = projectId;
+          document.getElementById('analysisProjectId').value = projectId;
         }
-
-        await loadProjectDetails(selectedProjectId);
+        await loadProjectDetails(projectId);
       }
 
       async function loadProjectDetails(projectId) {
         if (!projectId) {
-          renderParts([]);
-          renderLoadCases([]);
-          renderAnalyses([]);
+          renderParts([]); renderLoadCases([]); renderAnalyses([]);
+          populateSelect('analysisLoadCaseId', [], 'Select load case');
           return;
         }
         const [parts, loadCases, analyses] = await Promise.all([
@@ -514,11 +311,9 @@
           fetchJson(`${apiBase}/load-cases?project_id=${projectId}`),
           fetchJson(`${apiBase}/analyses?project_id=${projectId}`),
         ]);
-
         renderParts(parts);
         renderLoadCases(loadCases);
         renderAnalyses(analyses);
-
         populateSelect('analysisLoadCaseId', loadCases, 'Select load case');
       }
 
@@ -526,7 +321,6 @@
         event.preventDefault();
         const form = new FormData(event.currentTarget);
         const payload = Object.fromEntries(form.entries());
-        payload.status = 'draft';
         await fetchJson(`${apiBase}/projects`, { method: 'POST', body: JSON.stringify(payload) });
         event.currentTarget.reset();
         loadDashboard();
@@ -578,16 +372,10 @@
         loadDashboard();
       });
 
-      document.getElementById('partProjectId').addEventListener('change', (event) => {
-        loadProjectDetails(event.target.value);
-      });
-
-      document.getElementById('loadCaseProjectId').addEventListener('change', (event) => {
-        loadProjectDetails(event.target.value);
-      });
-
-      document.getElementById('analysisProjectId').addEventListener('change', async (event) => {
-        const projectId = event.target.value;
+      document.getElementById('partProjectId').addEventListener('change', (e) => loadProjectDetails(e.target.value));
+      document.getElementById('loadCaseProjectId').addEventListener('change', (e) => loadProjectDetails(e.target.value));
+      document.getElementById('analysisProjectId').addEventListener('change', async (e) => {
+        const projectId = e.target.value;
         if (!projectId) {
           populateSelect('analysisLoadCaseId', [], 'Select load case');
           return;

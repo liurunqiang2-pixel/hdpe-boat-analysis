@@ -1,32 +1,69 @@
 from __future__ import annotations
 
-import json
 import uuid
-from pathlib import Path
 from typing import Any
 
-from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from app.models import AnalysisModel, LoadCase, Material, Part, Project
+from app.models import AnalysisModel, LoadCase, Material, Part, Project, ReviewRecord, ManufacturingPackage, WeldJoint
+
+
+SEED_MATERIALS = [
+    {
+        "code": "HDPE-PE100",
+        "name": "Marine PE100 HDPE",
+        "material_family": "HDPE",
+        "density": 0.96,
+        "elastic_modulus": 900.0,
+        "poisson_ratio": 0.42,
+        "yield_strength": 22.0,
+        "source_type": "sample",
+        "certified": False,
+        "notes": "Reference sample only; not a certified design allowable.",
+    },
+    {
+        "code": "HDPE-PE80",
+        "name": "Marine PE80 HDPE",
+        "material_family": "HDPE",
+        "density": 0.95,
+        "elastic_modulus": 850.0,
+        "poisson_ratio": 0.41,
+        "yield_strength": 20.0,
+        "source_type": "sample",
+        "certified": False,
+        "notes": "Reference sample only; verify against supplier data sheets.",
+    },
+    {
+        "code": "HDPE-PE100-CF",
+        "name": "Reinforced PE100 Composite HDPE",
+        "material_family": "HDPE",
+        "density": 1.02,
+        "elastic_modulus": 1200.0,
+        "poisson_ratio": 0.40,
+        "yield_strength": 26.0,
+        "source_type": "sample",
+        "certified": False,
+        "notes": "Sample composite formulation for concept evaluation.",
+    },
+]
 
 
 def create_project(db: Session, payload: Any) -> Project:
-    project = Project(
+    item = Project(
         id=str(uuid.uuid4()),
         code=payload.code,
         name=payload.name,
         description=getattr(payload, "description", None),
         status=getattr(payload, "status", "draft"),
     )
-    db.add(project)
+    db.add(item)
     db.commit()
-    db.refresh(project)
-    return project
+    db.refresh(item)
+    return item
 
 
 def create_material(db: Session, payload: Any) -> Material:
-    material = Material(
+    item = Material(
         id=str(uuid.uuid4()),
         code=payload.code,
         name=payload.name,
@@ -35,38 +72,36 @@ def create_material(db: Session, payload: Any) -> Material:
         elastic_modulus=getattr(payload, "elastic_modulus", None),
         poisson_ratio=getattr(payload, "poisson_ratio", None),
         yield_strength=getattr(payload, "yield_strength", None),
-        source_type=getattr(payload, "source_type", "certified"),
+        source_type=getattr(payload, "source_type", "unverified"),
         certified=getattr(payload, "certified", False),
+        notes=getattr(payload, "notes", None),
     )
-    db.add(material)
+    db.add(item)
     db.commit()
-    db.refresh(material)
-    return material
+    db.refresh(item)
+    return item
 
 
 def create_part(db: Session, payload: Any) -> Part:
-    if not db.query(Project).filter(Project.id == payload.project_id).first():
-        raise HTTPException(status_code=404, detail="Project not found")
-    part = Part(
+    item = Part(
         id=str(uuid.uuid4()),
         project_id=payload.project_id,
         part_code=payload.part_code,
         part_name=payload.part_name,
         part_type=payload.part_type,
-        material_id=getattr(payload, "material_id", None),
+        material_id=payload.material_id,
         thickness=getattr(payload, "thickness", None),
         thickness_unit=getattr(payload, "thickness_unit", "mm"),
         status=getattr(payload, "status", "draft"),
+        notes=getattr(payload, "notes", None),
     )
-    db.add(part)
+    db.add(item)
     db.commit()
-    db.refresh(part)
-    return part
+    db.refresh(item)
+    return item
 
 
 def create_load_case(db: Session, payload: Any) -> LoadCase:
-    if not db.query(Project).filter(Project.id == payload.project_id).first():
-        raise HTTPException(status_code=404, detail="Project not found")
     item = LoadCase(
         id=str(uuid.uuid4()),
         project_id=payload.project_id,
@@ -82,19 +117,16 @@ def create_load_case(db: Session, payload: Any) -> LoadCase:
 
 
 def create_analysis(db: Session, payload: Any) -> AnalysisModel:
-    if not db.query(Project).filter(Project.id == payload.project_id).first():
-        raise HTTPException(status_code=404, detail="Project not found")
-    if payload.load_case_id and not db.query(LoadCase).filter(LoadCase.id == payload.load_case_id).first():
-        raise HTTPException(status_code=404, detail="Load case not found")
     item = AnalysisModel(
         id=str(uuid.uuid4()),
         project_id=payload.project_id,
-        load_case_id=payload.load_case_id,
+        load_case_id=getattr(payload, "load_case_id", None),
         analysis_code=payload.analysis_code,
         name=payload.name,
         analysis_type=getattr(payload, "analysis_type", "static"),
         solver_type=getattr(payload, "solver_type", "calculix"),
-        status="draft",
+        status=getattr(payload, "status", "draft"),
+        assumptions=getattr(payload, "assumptions", None),
     )
     db.add(item)
     db.commit()
@@ -102,29 +134,87 @@ def create_analysis(db: Session, payload: Any) -> AnalysisModel:
     return item
 
 
-def read_seed_materials() -> list[dict[str, Any]]:
-    path = Path(__file__).resolve().parents[1] / "data" / "hdpe_materials.json"
-    with path.open("r", encoding="utf-8") as f:
-        return json.load(f)
-
-
-def seed_materials(db: Session) -> None:
-    if db.query(Material).count() > 0:
-        return
-    for entry in read_seed_materials():
-        db.add(Material(**entry))
-    db.commit()
-
-
 def build_workbench_summary(db: Session, project_id: str) -> dict[str, Any]:
     project = db.query(Project).filter(Project.id == project_id).first()
     if project is None:
-        raise HTTPException(status_code=404, detail="Project not found")
+        raise ValueError("Project not found")
     return {
-        "project_id": project_id,
+        "project_id": project.id,
         "project_name": project.name,
         "materials_count": db.query(Material).count(),
         "parts_count": db.query(Part).filter(Part.project_id == project_id).count(),
         "load_cases_count": db.query(LoadCase).filter(LoadCase.project_id == project_id).count(),
         "analyses_count": db.query(AnalysisModel).filter(AnalysisModel.project_id == project_id).count(),
     }
+
+
+def read_seed_materials() -> list[dict[str, Any]]:
+    return SEED_MATERIALS
+
+
+def seed_materials(db: Session) -> None:
+    existing = db.query(Material).count()
+    if existing:
+        return
+    for row in SEED_MATERIALS:
+        material = Material(
+            id=str(uuid.uuid4()),
+            code=row["code"],
+            name=row["name"],
+            material_family=row["material_family"],
+            density=row["density"],
+            elastic_modulus=row["elastic_modulus"],
+            poisson_ratio=row["poisson_ratio"],
+            yield_strength=row["yield_strength"],
+            source_type=row["source_type"],
+            certified=row["certified"],
+            notes=row["notes"],
+        )
+        db.add(material)
+    db.commit()
+
+
+def create_review_record(db: Session, payload: Any) -> ReviewRecord:
+    item = ReviewRecord(
+        id=str(uuid.uuid4()),
+        project_id=payload.project_id,
+        entity_type=payload.entity_type,
+        entity_id=payload.entity_id,
+        reviewer=payload.reviewer,
+        status=getattr(payload, "status", "in_review"),
+        comment=getattr(payload, "comment", None),
+    )
+    db.add(item)
+    db.commit()
+    db.refresh(item)
+    return item
+
+
+def create_weld_joint(db: Session, payload: Any) -> WeldJoint:
+    item = WeldJoint(
+        id=str(uuid.uuid4()),
+        project_id=payload.project_id,
+        joint_code=payload.joint_code,
+        weld_type=getattr(payload, "weld_type", "butt"),
+        weld_process=getattr(payload, "weld_process", None),
+        notes=getattr(payload, "notes", None),
+    )
+    db.add(item)
+    db.commit()
+    db.refresh(item)
+    return item
+
+
+def create_manufacturing_package(db: Session, payload: Any) -> ManufacturingPackage:
+    item = ManufacturingPackage(
+        id=str(uuid.uuid4()),
+        project_id=payload.project_id,
+        name=payload.name,
+        package_type=getattr(payload, "package_type", "bom"),
+        status=getattr(payload, "status", "draft"),
+        notes=getattr(payload, "notes", None),
+    )
+    db.add(item)
+    db.commit()
+    db.refresh(item)
+    return item

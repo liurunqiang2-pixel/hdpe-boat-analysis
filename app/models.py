@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-from sqlalchemy import String, Float, ForeignKey, Text, Boolean, DateTime
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from datetime import datetime
+
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, String, Text
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class Base(DeclarativeBase):
@@ -13,7 +14,7 @@ class Project(Base):
     __tablename__ = "projects"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, index=True)
-    code: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    code: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     name: Mapped[str] = mapped_column(String(200), nullable=False)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[str] = mapped_column(String(50), default="draft")
@@ -23,20 +24,23 @@ class Project(Base):
     parts: Mapped[list["Part"]] = relationship(back_populates="project")
     load_cases: Mapped[list["LoadCase"]] = relationship(back_populates="project")
     analyses: Mapped[list["AnalysisModel"]] = relationship(back_populates="project")
+    manufacturing_packages: Mapped[list["ManufacturingPackage"]] = relationship(back_populates="project")
+    weld_joints: Mapped[list["WeldJoint"]] = relationship(back_populates="project")
+    reviews: Mapped[list["ReviewRecord"]] = relationship(back_populates="project")
 
 
 class Material(Base):
     __tablename__ = "materials"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, index=True)
-    code: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
+    code: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     name: Mapped[str] = mapped_column(String(200), nullable=False)
-    material_family: Mapped[str] = mapped_column(String(100), default="HDPE")
+    material_family: Mapped[str] = mapped_column(String(80), default="HDPE")
     density: Mapped[float | None] = mapped_column(Float, nullable=True)
     elastic_modulus: Mapped[float | None] = mapped_column(Float, nullable=True)
     poisson_ratio: Mapped[float | None] = mapped_column(Float, nullable=True)
     yield_strength: Mapped[float | None] = mapped_column(Float, nullable=True)
-    source_type: Mapped[str] = mapped_column(String(50), default="unverified")
+    source_type: Mapped[str] = mapped_column(String(80), default="unverified")
     certified: Mapped[bool] = mapped_column(Boolean, default=False)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
@@ -86,7 +90,7 @@ class AnalysisModel(Base):
     load_case_id: Mapped[str | None] = mapped_column(String(36), ForeignKey("load_cases.id"), nullable=True)
     analysis_code: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     name: Mapped[str] = mapped_column(String(200), nullable=False)
-    analysis_type: Mapped[str] = mapped_column(String(100), default="static")
+    analysis_type: Mapped[str] = mapped_column(String(80), default="static")
     solver_type: Mapped[str] = mapped_column(String(80), default="calculix")
     status: Mapped[str] = mapped_column(String(50), default="draft")
     assumptions: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -107,6 +111,8 @@ class WeldJoint(Base):
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
+    project: Mapped[Project] = relationship(back_populates="weld_joints")
+
 
 class ManufacturingPackage(Base):
     __tablename__ = "manufacturing_packages"
@@ -118,6 +124,8 @@ class ManufacturingPackage(Base):
     status: Mapped[str] = mapped_column(String(50), default="draft")
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    project: Mapped[Project] = relationship(back_populates="manufacturing_packages")
 
 
 class ReviewRecord(Base):
@@ -131,3 +139,5 @@ class ReviewRecord(Base):
     status: Mapped[str] = mapped_column(String(50), default="in_review")
     comment: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    project: Mapped[Project] = relationship(back_populates="reviews")
